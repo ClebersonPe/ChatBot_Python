@@ -1,16 +1,47 @@
 from intents import INTENTS
 from context import Context
+import spacy
+
+nlp = spacy.load("pt_core_news_sm") # carrega em pt-br
 
 context = Context()
 
+def preprocessamento(text):
+    return text.lower().strip() # tira os espaços e transforma em letra minuscula
+
+def detect_intent_spacy(message):
+    doc = nlp(message)
+
+    verbos = [t.lemma_ for t in doc if t.pos_ == "VERB"]
+    substantivos = [t.lemma_ for t in doc if t.pos_ in ["NOUN", "PROPN"]]
+
+    if "pagar" in verbos:
+        return "pagamento"
+    
+    if "status" in substantivos or "entrega" in substantivos:
+        return "status_pedido"
+
+    if "oi" in message or "olá" in message:
+        return "saudacao"
+
+    if "sair" in message or "tchau" in message:
+        return "despedida"
+
+
 def detect_intent(message):
+    intent = detect_intent_spacy(message) #primeiro verifica usando o spacy, volta se achar
+    if intent:
+        return intent
+
     message = message.lower()
-    for intent, keywords in INTENTS.items():   #keywords é o tipo de intenção, o for percorre a palavra chave(Intenção) e cada palavra chave tem varias keywords(oi, ola)
+    for intent, keywords in INTENTS.items(): #só cai aqui se o spacy por ventura nao achar nada
         for word in keywords:
             if word in message:
                 return intent
-    
+
     return None
+   
+    
     
 def respond(intent, message, context):
 
