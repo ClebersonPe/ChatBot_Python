@@ -9,22 +9,22 @@ for token in doc:
 
 # Vou usar essa lib para ajudar na verificação de cada intent do usuário, o papel dela aqui foi destrinchar essa frase em tokens
 # Resultado Obtido:
-# Boa Boa ADJ  -- 
-# tarde tarde ADV
-# , , PUNCT
-# como como ADV
-# estão estar VERB
-# as o DET
-# coisas coisa NOUN
-# ai ai ADJ
-# ? ? PUNCT
-# Já já ADV
-# terminou terminar VERB
-# o o PRON
-# que que PRON
-# estava estar AUX
-# fazendo fazer VERB
-# ? ? PUNCT
+# Boa Boa ADJ  -- Adjetivo
+# tarde tarde ADV -- Advérbio
+# , , PUNCT -- Pontuação
+# como como ADV -- Advérbio
+# estão estar VERB - Verbo
+# as o DET -- Artigo     
+# coisas coisa NOUN - Substantivo
+# ai ai ADJ - Adjetivo -- Erro de ambiguidade interessante aqui, ao invés de usar "aí", usei "ai". Um erro meu, porém, é importante observar o contexto da frase
+# ? ? PUNCT -- Pontuação
+# Já já ADV -- Advérbio
+# terminou terminar VERB -- Verbo
+# o o PRON -- Pronome
+# que que PRON -- Pronome
+# estava estar AUX - Verbo Auxiliar
+# fazendo fazer VERB - Verbo
+# ? ? PUNCT -- Pontuação
 
 
 #text == palavra da frase / lemma == lemantização, palavra crua do dicionário / Pos == classe gramatical (part of speach)

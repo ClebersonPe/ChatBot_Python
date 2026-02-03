@@ -26,6 +26,8 @@ def detect_intent_spacy(message):
 
     if "sair" in message or "tchau" in message:
         return "despedida"
+    
+    return None
 
 
 def detect_intent(message):
@@ -47,11 +49,11 @@ def respond(intent, message, context):
 
     if context.current_topic == "pagamento":
         if "pix" in message:
-            context.current_topic = None
+            context.current_topic = "aguardando_intencao" # aguarda para verificar se existe outra intent do usuário
             return "Pagamento via Pix Confirmado!"
         
         elif "cartao" in message:
-            context.current_topic = None
+            context.current_topic = "aguardando_intencao"
             return "Pagamento via Cartão Confirmado!"
         
         else:
@@ -59,19 +61,24 @@ def respond(intent, message, context):
     
     if context.current_topic == "status_pedido":
         if "informacoes" in message:
-            context.current_topic = None
+            context.current_topic = "aguardando_intencao"
             return "Seu pedido: Honda Civic 2012, prata"
         
         elif "status" in message or "pagamento" in message:
-            context.current_topic = None
+            context.current_topic = "aguardando_intencao"
             return "Seu pagamento está em processo de confirmação, aguarde"
         
         elif "rastrear" in message or "entrega" in message:
-            context.current_topic = None
-            return "Entrega ainda não efetuada, esperando pagamento..."
+            context.current_topic = "aguardando_intencao"
+            return "Ainda não tenho uma data exata da sua entrega, por favor aguarde 24 horas"
         
         else:
-            return "Desculpa, não entendi o que você quis dizer!"
+            return "Você quer informações, status ou rastrear a entrega?"
+        
+    
+    if context.current_topic == "aguardando_intencao":
+        context.current_topic = None
+        return "Deseja algo mais?"
 
 
 
@@ -90,6 +97,7 @@ def respond(intent, message, context):
         context.current_topic = "status_pedido"
         return "Deseja saber as informacoes do pedido, status de pagamento ou rastrear entrega?"
     
+    
     elif intent == "despedida":
         return "Saindo... Zzzz"
     
@@ -103,8 +111,10 @@ print ("Digite sair para encerrar o chatBot")
 while True:
     user_input = input("Você: ")
 
-    intent = detect_intent(user_input)
-    response = respond(intent, user_input.lower(), context)
+    message = preprocessamento(user_input)
+
+    intent = detect_intent(message)
+    response = respond(intent, message, context)
 
     print("Bot", response)
 
