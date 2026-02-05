@@ -42,38 +42,45 @@ def detect_intent(message):
                 return intent
 
     return None
+
+
+def handle_pagamento(intent, message, context):
+    if "pix" in message:
+        context.current_topic = "aguardando_intencao" # aguarda para verificar se existe outra intent do usuário
+        return "Pagamento via Pix Confirmado!"
+    elif "cartao" in message:
+        return "Pagamento via Cartão Confirmado!"
+    else:
+        return "Por favor registre a forma de pagamento: Cartão ou Pix"
+    
+def handle_pedido(intent, message, context):
+    if "informacoes" in message:
+        context.current_topic = "aguardando_intencao"
+        return "Seu pedido: Honda Civic 2012, prata"
+        
+    elif "status" in message or "pagamento" in message:
+        context.current_topic = "aguardando_intencao"
+        return "Seu pagamento está em processo de confirmação, aguarde"
+        
+    elif "rastrear" in message or "entrega" in message:
+        context.current_topic = "aguardando_intencao"
+        return "Ainda não tenho uma data exata da sua entrega, por favor aguarde 24 horas"
+        
+    else:
+        return "Você quer informações, status ou rastrear a entrega?"
+
+
    
     
     
 def respond(intent, message, context):
 
     if context.current_topic == "pagamento":
-        if "pix" in message:
-            context.current_topic = "aguardando_intencao" # aguarda para verificar se existe outra intent do usuário
-            return "Pagamento via Pix Confirmado!"
-        
-        elif "cartao" in message:
-            context.current_topic = "aguardando_intencao"
-            return "Pagamento via Cartão Confirmado!"
-        
-        else:
-            return "Por favor registre a forma de pagamento: Cartão ou Pix"
+        return handle_pagamento(intent, message, context)
+    
     
     if context.current_topic == "status_pedido":
-        if "informacoes" in message:
-            context.current_topic = "aguardando_intencao"
-            return "Seu pedido: Honda Civic 2012, prata"
-        
-        elif "status" in message or "pagamento" in message:
-            context.current_topic = "aguardando_intencao"
-            return "Seu pagamento está em processo de confirmação, aguarde"
-        
-        elif "rastrear" in message or "entrega" in message:
-            context.current_topic = "aguardando_intencao"
-            return "Ainda não tenho uma data exata da sua entrega, por favor aguarde 24 horas"
-        
-        else:
-            return "Você quer informações, status ou rastrear a entrega?"
+        return handle_pedido(intent, message, context)
         
     
     if context.current_topic == "aguardando_intencao":
@@ -83,7 +90,7 @@ def respond(intent, message, context):
 
 
     if intent == "saudacao":
-        context.current_topic = "saudacao"
+        context.current_topic = "saudacao" 
         return "Olá, como posso te ajudar?"
     
     elif intent == "ajuda":
